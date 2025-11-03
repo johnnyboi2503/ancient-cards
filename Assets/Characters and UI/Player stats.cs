@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Playerstats", menuName = "Scriptable Objects/Playerstats")]
 public class Playerstats : ScriptableObject
 {
-    public static int HP;
+    public int HP = 100;
     public List<Attacks> AerialAttacks;
     public List<Attacks> NeutralAttacks;
     public List<Attacks> GroundAttacks;

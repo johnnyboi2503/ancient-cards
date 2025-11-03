@@ -31,4 +31,9 @@ public class CombatEnums
         Grab,
         Block
     }
+    public enum EnemyMovePositionCalcType
+    {
+        Random,
+        Combo
+    }
 }

@@ -9,6 +9,12 @@ namespace AYellowpaper.SerializedCollections
     public class Combatturnmannager : MonoBehaviour
     {
         public Playerstats CurrentPlayerStats;
+        public TextMeshProUGUI OpeningCounterTMP;
+        public int OpeningCounter;
+        public TextMeshProUGUI PlayerHPTMP;
+        public int PlayerHP;
+        public TextMeshProUGUI EnemyHPTMP;
+        public int EnemyHP;
         public GameObject Enemy;
         public GameObject MoveGrid;
         public GameObject AttackGrid;
@@ -42,6 +48,17 @@ namespace AYellowpaper.SerializedCollections
         {
             CurrentTurnStep = TurnSteps.MoveStep;
             OppeningCounter = 00;
+            PlayerHP = CurrentPlayerStats.HP;
+            EnemyHP = Enemy.GetComponent<EnemyAI>().EnemyStartHP;
+            PlayerHPTMP.text = "HP:\n" + PlayerHP.ToString();
+            EnemyHPTMP.text = "HP:\n" + EnemyHP.ToString();
+            OpeningCounterTMP.text = OpeningCounter.ToString();
+        }
+        public void updateTMP()
+        {
+            PlayerHPTMP.text = "HP:\n" + PlayerHP.ToString();
+            EnemyHPTMP.text = "HP:\n" + EnemyHP.ToString();
+            OpeningCounterTMP.text = OpeningCounter.ToString();
         }
         public void ResetAttackOrganizer()
         {
@@ -169,7 +186,7 @@ namespace AYellowpaper.SerializedCollections
         }
         public void SetEnemyAIMovePosition()
         {
-            Enemy.GetComponent<EnemyAI>().EnemyMovePositionCalc();
+            Enemy.GetComponent<EnemyAI>().EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Random);
         }
         public void SetPlayerMovePosition(GameObject Button)
         {
@@ -246,10 +263,27 @@ namespace AYellowpaper.SerializedCollections
             if (PlayerWeak && EnemyWeak)
             {
                 Debug.Log("Enemy and Player weak");
+                if (PlayerAttack.End_Lag < EnemyAttack.End_Lag)
+                {
+                    Debug.Log("Enemy Wiff player can attack");
+
+                } 
+                else if (EnemyAttack.End_Lag < PlayerAttack.End_Lag)
+                {
+                    Debug.Log("Player Wiff Enemy can attack");
+                } 
+                else
+                {
+                    Debug.Log("both Wiff reset combat");
+                }
             } 
             else if (PlayerWeak)
             {
                 Debug.Log("Player weak");
+                PlayerHP = PlayerHP - EnemyAttack.Damage;
+                OpeningCounter = EnemyAttack.Start_Lag;
+                updateTMP();
+                Enemy.GetComponent<EnemyAI>().EnemyCombo();
             } 
             else if (EnemyWeak)
             {

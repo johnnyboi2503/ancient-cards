@@ -12,4 +12,5 @@ public class Attacks : ScriptableObject
     public int End_Lag;
     public int Damage;
     public CombatEnums.Placement EnemyPlacementAfterHit;
+    public CombatEnums.Placement PlayerPlacementAfterHit;
 }
