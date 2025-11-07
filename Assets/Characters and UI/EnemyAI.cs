@@ -94,6 +94,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (!EnemyAttacks.Any()) // if there are any attacks at all
         {
+            CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
             CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
             Debug.Log("No Enemy Attacks");
             return;
@@ -109,6 +110,7 @@ public class EnemyAI : MonoBehaviour
         }
         if (CanAttack == false)
         {
+            CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
             CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
             Debug.Log("No avalable Attacks");
             return;
@@ -129,10 +131,13 @@ public class EnemyAI : MonoBehaviour
     public void EnemyCombo()
     {
         EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
+        Debug.Log("running combo");
         while (CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP > 0 && CombatTurnMannager.GetComponent<Combatturnmannager>().OppeningCounter > 0)
         {
+            EnemyPlacement = CurrentAttack.EnemyPlacementAfterHit;
             if (!EnemyAttacks.Any()) // if there are any attacks at all
             {
+                CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
                 CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
                 Debug.Log("No Enemy Attacks");
                 return;
@@ -148,6 +153,7 @@ public class EnemyAI : MonoBehaviour
             }
             if (CanAttack == false)
             {
+                CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
                 CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
                 Debug.Log("No avalable Attacks");
                 return;
@@ -160,8 +166,10 @@ public class EnemyAI : MonoBehaviour
                 {
                     AttackCheck = true;
                     CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = CurrentAttack;
+                    CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
                 }
             }
+            Debug.Log(CurrentAttack);
             CombatTurnMannager.GetComponent<Combatturnmannager>().updateTMP();
         }
     }
