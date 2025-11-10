@@ -10,7 +10,7 @@ namespace AYellowpaper.SerializedCollections
     {
         public Playerstats CurrentPlayerStats;
         public TextMeshProUGUI OpeningCounterTMP;
-        public int OpeningCounter;
+        public int OpeningCounter = 0;
         public TextMeshProUGUI PlayerHPTMP;
         public int PlayerHP;
         public TextMeshProUGUI EnemyHPTMP;
@@ -41,23 +41,22 @@ namespace AYellowpaper.SerializedCollections
             EnemyWhiff
         }
         public TurnSteps CurrentTurnStep;
-        public int OppeningCounter;
         public Attacks PlayerAttack;
         public Attacks EnemyAttack;
         public void Awake()
         {
             CurrentTurnStep = TurnSteps.MoveStep;
-            OppeningCounter = 00;
+            OpeningCounter = 00;
             PlayerHP = CurrentPlayerStats.HP;
             EnemyHP = Enemy.GetComponent<EnemyAI>().EnemyStartHP;
-            PlayerHPTMP.text = "HP:\n" + PlayerHP.ToString();
-            EnemyHPTMP.text = "HP:\n" + EnemyHP.ToString();
+            PlayerHPTMP.text = "Player\n"+ "HP: " + PlayerHP.ToString();
+            EnemyHPTMP.text = "Enemy\n"+"HP: " + EnemyHP.ToString();
             OpeningCounterTMP.text = OpeningCounter.ToString();
         }
         public void updateTMP()
         {
-            PlayerHPTMP.text = "HP:\n" + PlayerHP.ToString();
-            EnemyHPTMP.text = "HP:\n" + EnemyHP.ToString();
+            PlayerHPTMP.text = "Player\n" + "HP: " + PlayerHP.ToString();
+            EnemyHPTMP.text = "Enemy\n"+"HP: " + EnemyHP.ToString();
             OpeningCounterTMP.text = OpeningCounter.ToString();
         }
         public void ResetAttackOrganizer()

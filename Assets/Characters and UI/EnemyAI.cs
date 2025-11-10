@@ -124,24 +124,19 @@ public class EnemyAI : MonoBehaviour
                 AttackCheck = true;
                 CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = CurrentAttack;
                 CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
+                Debug.Log(CurrentAttack);
+                Debug.Log(CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter);
             }
         }
-        Debug.Log(CurrentAttack);
     }
     public void EnemyCombo()
     {
         EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
         Debug.Log("running combo");
-        while (CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP > 0 && CombatTurnMannager.GetComponent<Combatturnmannager>().OppeningCounter > 0)
+        while (CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP > 0 && CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter > 0)
         {
+            Debug.Log("running combo2");
             EnemyPlacement = CurrentAttack.EnemyPlacementAfterHit;
-            if (!EnemyAttacks.Any()) // if there are any attacks at all
-            {
-                CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
-                CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
-                Debug.Log("No Enemy Attacks");
-                return;
-            }
             bool CanAttack = false;
             for (int i = 0; i < EnemyAttacks.Count; i++) // if there are any avalable attacks in the current pos
             {
@@ -153,10 +148,9 @@ public class EnemyAI : MonoBehaviour
             }
             if (CanAttack == false)
             {
-                CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
-                CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
+                CombatAIReset();
                 Debug.Log("No avalable Attacks");
-                return;
+                break;
             }
             bool AttackCheck = false;
             while (AttackCheck == false) // out of the avallable attacks pick one
@@ -166,10 +160,12 @@ public class EnemyAI : MonoBehaviour
                 {
                     AttackCheck = true;
                     CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = CurrentAttack;
-                    CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
+                    CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP -= CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack.Damage;
+                    CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter -= CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack.Start_Lag;
+                    Debug.Log(CurrentAttack);
+                    Debug.Log(CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter);
                 }
             }
-            Debug.Log(CurrentAttack);
             CombatTurnMannager.GetComponent<Combatturnmannager>().updateTMP();
         }
     }
