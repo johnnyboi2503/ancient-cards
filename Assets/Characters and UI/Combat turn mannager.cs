@@ -282,7 +282,7 @@ namespace AYellowpaper.SerializedCollections
                 PlayerHP = PlayerHP - EnemyAttack.Damage;
                 OpeningCounter = EnemyAttack.Start_Lag;
                 updateTMP();
-                Enemy.GetComponent<EnemyAI>().EnemyCombo();
+                StartCoroutine(Enemy.GetComponent<EnemyAI>().EnemyCombo());
             } 
             else if (EnemyWeak)
             {
