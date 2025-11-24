@@ -278,7 +278,8 @@ namespace AYellowpaper.SerializedCollections
             } 
             else if (PlayerWeak)
             {
-                Debug.Log("Player weak");
+                Debug.Log("Player weak To" + EnemyAttack);
+                Enemy.GetComponent<EnemyAI>().EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
                 PlayerHP = PlayerHP - EnemyAttack.Damage;
                 OpeningCounter = EnemyAttack.Start_Lag;
                 updateTMP();
@@ -291,6 +292,7 @@ namespace AYellowpaper.SerializedCollections
             else
             {
                 Debug.Log("neither weak");
+                Enemy.GetComponent<EnemyAI>().CombatAIReset();
             }
         }
     }

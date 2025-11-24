@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd6f5cd926d49a14c820eae114ba2f72, type: 3}
-  m_Name: Enemy win attack
+  m_Name: Enemy Attack 3
   m_EditorClassIdentifier: 
-  AttackName: 
-  ThisMovePlacement: 0
+  AttackName: Enemy attack 3
+  ThisMovePlacement: 2
   ThisAttackType: 1
-  MoveWeakness: 00000000
-  Start_Lag: 0
-  End_Lag: 0
-  Damage: 0
-  EnemyPlacementAfterHit: 0
-  PlayerPlacementAfterHit: 0
+  MoveWeakness: 04000000
+  Start_Lag: 2
+  End_Lag: 8
+  Damage: 1
+  EnemyPlacementAfterHit: 4
+  PlayerPlacementAfterHit: 2
   AttackAnimation: {fileID: 7400000, guid: 4d63755f3a8d7514e8c6afd5dbe3009a, type: 2}

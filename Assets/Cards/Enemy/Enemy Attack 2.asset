@@ -20,3 +20,5 @@ MonoBehaviour:
   End_Lag: 5
   Damage: 7
   EnemyPlacementAfterHit: 8
+  PlayerPlacementAfterHit: 0
+  AttackAnimation: {fileID: 7400000, guid: 4d63755f3a8d7514e8c6afd5dbe3009a, type: 2}

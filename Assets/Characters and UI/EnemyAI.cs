@@ -13,7 +13,7 @@ public class EnemyAI : MonoBehaviour
     public List<Attacks> EnemyAttacks;
     public Attacks CurrentAttack;
     public Attacks NoAttacksAvalablePlaceHolderObject;
-    public Animator Animator;
+    public Animator Anim;
     [SerializedDictionary("Position", "True or False")]
     public SerializedDictionary<string, AnimationClip> Animations = new SerializedDictionary<string, AnimationClip>
         {
@@ -46,6 +46,10 @@ public class EnemyAI : MonoBehaviour
             { "MidRange", false },
             { "Close", false }
         };
+    public void Start()
+    {
+        Anim = GetComponent<Animator>();
+    }
     public void ResetAttackOrganizer()
     {
         List<string> keys = new List<string>(AttackOrganizer.Keys);
@@ -79,47 +83,47 @@ public class EnemyAI : MonoBehaviour
             case CombatEnums.Placement.Aerial_Far:
                 AttackOrganizer["Aerial"] = true;
                 AttackOrganizer["Far"] = true;
-                Animator.Play(Animations["Aerial_Far"].name);
+                Anim.Play(Animations["Aerial_Far"].name);
                 break;
             case CombatEnums.Placement.Neutral_Far:
                 AttackOrganizer["Neutral"] = true;
                 AttackOrganizer["Far"] = true;
-                Animator.Play(Animations["Neutral_Far"].name);
+                Anim.Play(Animations["Neutral_Far"].name);
                 break;
             case CombatEnums.Placement.Ground_Far:
                 AttackOrganizer["Ground"] = true;
                 AttackOrganizer["Far"] = true;
-                Animator.Play(Animations["Ground_Far"].name);
+                Anim.Play(Animations["Ground_Far"].name);
                 break;
             case CombatEnums.Placement.Aerial_MidRange:
                 AttackOrganizer["Aerial"] = true;
                 AttackOrganizer["MidRange"] = true;
-                Animator.Play(Animations["Aerial_MidRange"].name);
+                Anim.Play(Animations["Aerial_MidRange"].name);
                 break;
             case CombatEnums.Placement.Neutral_MidRange:
                 AttackOrganizer["Neutral"] = true;
                 AttackOrganizer["MidRange"] = true;
-                Animator.Play(Animations["Neutral_MidRange"].name);
+                Anim.Play(Animations["Neutral_MidRange"].name);
                 break;
             case CombatEnums.Placement.Ground_MidRange:
                 AttackOrganizer["Ground"] = true;
                 AttackOrganizer["MidRange"] = true;
-                Animator.Play(Animations["Ground_MidRange"].name);
+                Anim.Play(Animations["Ground_MidRange"].name);
                 break;
             case CombatEnums.Placement.Aerial_Close:
                 AttackOrganizer["Aerial"] = true;
                 AttackOrganizer["Close"] = true;
-                Animator.Play(Animations["Aerial_Close"].name);
+                Anim.Play(Animations["Aerial_Close"].name);
                 break;
             case CombatEnums.Placement.Neutral_Close:
                 AttackOrganizer["Neutral"] = true;
                 AttackOrganizer["Close"] = true;
-                Animator.Play(Animations["Neutral_Close"].name);
+                Anim.Play(Animations["Neutral_Close"].name);
                 break;
             case CombatEnums.Placement.Ground_Close:
                 AttackOrganizer["Ground"] = true;
                 AttackOrganizer["Close"] = true;
-                Animator.Play(Animations["Ground_Close"].name);
+                Anim.Play(Animations["Ground_Close"].name);
                 break;
         }
     }
@@ -156,6 +160,7 @@ public class EnemyAI : MonoBehaviour
             {
                 AttackCheck = true;
                 CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = CurrentAttack;
+                Anim.Play(CurrentAttack.AttackAnimation.name, 0, 0.0f);
                 CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
                 Debug.Log(CurrentAttack);
                 Debug.Log(CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter);
@@ -195,11 +200,13 @@ public class EnemyAI : MonoBehaviour
                     CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = CurrentAttack;
                     CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP -= CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack.Damage;
                     CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter -= CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack.Start_Lag;
-                    yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+                    Anim.Play(CurrentAttack.AttackAnimation.name,0,0.0f);
+                    yield return new WaitUntil(() => Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
                 }
             }
             CombatTurnMannager.GetComponent<Combatturnmannager>().updateTMP();
         }
+        CombatAIReset();
     }
     public void CombatAIReset()
     {
@@ -207,31 +214,31 @@ public class EnemyAI : MonoBehaviour
         switch (EnemyPlacement)
         {
             case CombatEnums.Placement.Aerial_Far:
-                Animator.Play(Animations["Aerial_Far_Reset"].name);
+                Anim.Play(Animations["Aerial_Far_Reset"].name);
                 break;
             case CombatEnums.Placement.Neutral_Far:
-                Animator.Play(Animations["Neutral_Far_Reset"].name);
+                Anim.Play(Animations["Neutral_Far_Reset"].name);
                 break;
             case CombatEnums.Placement.Ground_Far:
-                Animator.Play(Animations["Ground_Far_Reset"].name);
+                Anim.Play(Animations["Ground_Far_Reset"].name);
                 break;
             case CombatEnums.Placement.Aerial_MidRange:
-                Animator.Play(Animations["Aerial_MidRange_Reset"].name);
+                Anim.Play(Animations["Aerial_MidRange_Reset"].name);
                 break;
             case CombatEnums.Placement.Neutral_MidRange:
-                Animator.Play(Animations["Neutral_MidRange_Reset"].name);
+                Anim.Play(Animations["Neutral_MidRange_Reset"].name);
                 break;
             case CombatEnums.Placement.Ground_MidRange:
-                Animator.Play(Animations["Ground_MidRange_Reset"].name);
+                Anim.Play(Animations["Ground_MidRange_Reset"].name);
                 break;
             case CombatEnums.Placement.Aerial_Close:
-                Animator.Play(Animations["Aerial_Close_Reset"].name);
+                Anim.Play(Animations["Aerial_Close_Reset"].name);
                 break;
             case CombatEnums.Placement.Neutral_Close:
-                Animator.Play(Animations["Neutral_Close_Reset"].name);
+                Anim.Play(Animations["Neutral_Close_Reset"].name);
                 break;
             case CombatEnums.Placement.Ground_Close:
-                Animator.Play(Animations["Ground_Close_Reset"].name);
+                Anim.Play(Animations["Ground_Close_Reset"].name);
                 break;
         }
     }

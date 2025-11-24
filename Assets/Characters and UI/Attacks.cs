@@ -13,4 +13,5 @@ public class Attacks : ScriptableObject
     public int Damage;
     public CombatEnums.Placement EnemyPlacementAfterHit;
     public CombatEnums.Placement PlayerPlacementAfterHit;
+    public AnimationClip AttackAnimation;
 }
