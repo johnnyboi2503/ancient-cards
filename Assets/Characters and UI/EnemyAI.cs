@@ -67,6 +67,14 @@ public class EnemyAI : MonoBehaviour
     {
         EnemyPlacement = CombatEnums.Placement.Neutral_MidRange;
     }
+    public void ResetMovePositionOrganizer()
+    {
+        List<string> keys = new List<string>(AttackOrganizer.Keys);
+        foreach (string key in keys)
+        {
+            AttackOrganizer[key] = false;
+        }
+    }
     public void EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType Type)
     {
         switch (Type)
@@ -132,7 +140,7 @@ public class EnemyAI : MonoBehaviour
         if (!EnemyAttacks.Any()) // if there are any attacks at all
         {
             CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
-            CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
+            CombatTurnMannager.GetComponent<Combatturnmannager>().StartCoroutine(CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack());
             Debug.Log("No Enemy Attacks");
             return;
         }
@@ -148,7 +156,7 @@ public class EnemyAI : MonoBehaviour
         if (CanAttack == false)
         {
             CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = NoAttacksAvalablePlaceHolderObject;
-            CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
+            CombatTurnMannager.GetComponent<Combatturnmannager>().StartCoroutine(CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack());
             Debug.Log("No avalable Attacks");
             return;
         }
@@ -159,22 +167,20 @@ public class EnemyAI : MonoBehaviour
             if (AttackOrganizer[CurrentAttack.ThisMovePlacement.ToString()])
             {
                 AttackCheck = true;
+                ResetMovePositionOrganizer();
                 CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack = CurrentAttack;
-                Anim.Play(CurrentAttack.AttackAnimation.name, 0, 0.0f);
-                CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack();
-                Debug.Log(CurrentAttack);
-                Debug.Log(CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter);
+                CombatTurnMannager.GetComponent<Combatturnmannager>().StartCoroutine(CombatTurnMannager.GetComponent<Combatturnmannager>().CalcAttack());
             }
         }
     }
     public IEnumerator EnemyCombo()
     {
-        EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
         Debug.Log("running combo");
         while (CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP > 0 && CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter > 0)
         {
             Debug.Log("running combo2");
-            EnemyPlacement = CurrentAttack.EnemyPlacementAfterHit;
+            ResetMovePositionOrganizer();
+            EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
             bool CanAttack = false;
             for (int i = 0; i < EnemyAttacks.Count; i++) // if there are any avalable attacks in the current pos
             {
@@ -202,9 +208,15 @@ public class EnemyAI : MonoBehaviour
                     CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter -= CombatTurnMannager.GetComponent<Combatturnmannager>().EnemyAttack.Start_Lag;
                     Anim.Play(CurrentAttack.AttackAnimation.name,0,0.0f);
                     yield return new WaitUntil(() => Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+                    Debug.Log(CurrentAttack);
+                    Debug.Log(CombatTurnMannager.GetComponent<Combatturnmannager>().OpeningCounter);
                 }
             }
             CombatTurnMannager.GetComponent<Combatturnmannager>().updateTMP();
+        }
+        if(CombatTurnMannager.GetComponent<Combatturnmannager>().PlayerHP <= 0)
+        {
+            Debug.Log("Fight over killed Player");
         }
         CombatAIReset();
     }

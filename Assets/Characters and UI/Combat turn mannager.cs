@@ -3,12 +3,14 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Collections;
 
 namespace AYellowpaper.SerializedCollections
 {
     public class Combatturnmannager : MonoBehaviour
     {
         public Playerstats CurrentPlayerStats;
+        public CombatEnums.Placement PlayerPlacement;
         public TextMeshProUGUI OpeningCounterTMP;
         public int OpeningCounter = 0;
         public TextMeshProUGUI PlayerHPTMP;
@@ -20,6 +22,7 @@ namespace AYellowpaper.SerializedCollections
         public GameObject AttackGrid;
         public List<GameObject> AttackButtons;
         public List<Attacks> AttackData;
+        public Animator PlayerAnim;
         [SerializedDictionary("Move", "True or False")]
         public SerializedDictionary<string, bool> AttackOrganizer = new SerializedDictionary<string, bool>
         {
@@ -43,6 +46,8 @@ namespace AYellowpaper.SerializedCollections
         public TurnSteps CurrentTurnStep;
         public Attacks PlayerAttack;
         public Attacks EnemyAttack;
+        private bool InCombo = false;
+        private bool AttackComboPressed = false;
         public void Awake()
         {
             CurrentTurnStep = TurnSteps.MoveStep;
@@ -58,6 +63,7 @@ namespace AYellowpaper.SerializedCollections
             PlayerHPTMP.text = "Player\n" + "HP: " + PlayerHP.ToString();
             EnemyHPTMP.text = "Enemy\n"+"HP: " + EnemyHP.ToString();
             OpeningCounterTMP.text = OpeningCounter.ToString();
+            CurrentPlayerStats.HP = PlayerHP;
         }
         public void ResetAttackOrganizer()
         {
@@ -197,38 +203,47 @@ namespace AYellowpaper.SerializedCollections
                 case "Aerial Far":
                     AttackOrganizer["Aerial"] = true;
                     AttackOrganizer["Far"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Aerial_Far;
                     break;
                 case "Neutral Far":
                     AttackOrganizer["Neutral"] = true;
                     AttackOrganizer["Far"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Neutral_Far;
                     break;
                 case "Ground Far":
                     AttackOrganizer["Ground"] = true;
                     AttackOrganizer["Far"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Ground_Far;
                     break;
                 case "Aerial Mid-Range":
                     AttackOrganizer["Aerial"] = true;
                     AttackOrganizer["MidRange"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Aerial_MidRange;
                     break;
                 case "Neutral Mid-Range":
                     AttackOrganizer["Neutral"] = true;
                     AttackOrganizer["MidRange"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Neutral_MidRange;
                     break;
                 case "Ground Mid-Range":
                     AttackOrganizer["Ground"] = true;
                     AttackOrganizer["MidRange"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Ground_MidRange;
                     break;
                 case "Aerial Close":
                     AttackOrganizer["Aerial"] = true;
                     AttackOrganizer["Close"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Aerial_Close;
                     break;
                 case "Neutral Close":
                     AttackOrganizer["Neutral"] = true;
                     AttackOrganizer["Close"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Neutral_Close;
                     break;
                 case "Ground Close":
                     AttackOrganizer["Ground"] = true;
                     AttackOrganizer["Close"] = true;
+                    PlayerPlacement = CombatEnums.Placement.Ground_Close;
                     break;
             }
             AttackGrid.GetComponent<CanvasGroup>().interactable = true;
@@ -238,9 +253,12 @@ namespace AYellowpaper.SerializedCollections
         public void SetPlayerAttack(int ButtonInList)
         {
             PlayerAttack = AttackData[ButtonInList];
-            Enemy.GetComponent<EnemyAI>().EnemyAttackCalc();
+            if (InCombo == false)
+            {
+                Enemy.GetComponent<EnemyAI>().EnemyAttackCalc();
+            }
         }
-        public void CalcAttack()
+        public IEnumerator CalcAttack()
         {
             AttackGrid.GetComponent<CanvasGroup>().interactable = false;
             bool PlayerWeak = false;
@@ -265,35 +283,142 @@ namespace AYellowpaper.SerializedCollections
                 if (PlayerAttack.End_Lag < EnemyAttack.End_Lag)
                 {
                     Debug.Log("Enemy Wiff player can attack");
-
+                    Restart();
                 } 
                 else if (EnemyAttack.End_Lag < PlayerAttack.End_Lag)
                 {
                     Debug.Log("Player Wiff Enemy can attack");
+                    Restart();
                 } 
                 else
                 {
                     Debug.Log("both Wiff reset combat");
+                    Restart();
                 }
             } 
             else if (PlayerWeak)
             {
-                Debug.Log("Player weak To" + EnemyAttack);
+                Debug.Log("Player weak To " + EnemyAttack);
                 Enemy.GetComponent<EnemyAI>().EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
                 PlayerHP = PlayerHP - EnemyAttack.Damage;
                 OpeningCounter = EnemyAttack.Start_Lag;
                 updateTMP();
+                Enemy.GetComponent<EnemyAI>().Anim.Play(Enemy.GetComponent<EnemyAI>().CurrentAttack.AttackAnimation.name, 0, 0.0f);
+                Enemy.GetComponent<EnemyAI>().EnemyPlacement = Enemy.GetComponent<EnemyAI>().CurrentAttack.EnemyPlacementAfterHit;
+                yield return new WaitUntil(() => Enemy.GetComponent<EnemyAI>().Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
                 StartCoroutine(Enemy.GetComponent<EnemyAI>().EnemyCombo());
+                Restart();
             } 
             else if (EnemyWeak)
             {
                 Debug.Log("Enemy weak");
+                InCombo = true;
+                PlayerAnim.Play(PlayerAttack.AttackAnimation.name, 0, 0.0f);
+                EnemyHP = EnemyHP - PlayerAttack.Damage;
+                OpeningCounter = PlayerAttack.Start_Lag;
+                updateTMP();
+                yield return new WaitUntil(() => PlayerAnim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+                StartCoroutine(PlayerCombo());
             }
             else
             {
                 Debug.Log("neither weak");
                 Enemy.GetComponent<EnemyAI>().CombatAIReset();
+                Restart();
             }
+        }
+        public IEnumerator PlayerCombo()
+        {
+            ResetAttackOrganizer();
+            PlayerPlacement = PlayerAttack.PlayerPlacementAfterHit;
+            AttackComboPressed = false;
+            AttackGrid.GetComponent<CanvasGroup>().interactable = true;
+            yield return new WaitUntil(() => AttackComboPressed == true);
+            while (EnemyHP > 0 && OpeningCounter > 0) 
+            {
+                AttackComboPressed = false;
+                switch (PlayerPlacement)
+                {
+                    case CombatEnums.Placement.Aerial_Far:
+                        AttackOrganizer["Aerial"] = true;
+                        AttackOrganizer["Far"] = true;
+                        //Anim.Play(Animations["Aerial_Far"].name);
+                        break;
+                    case CombatEnums.Placement.Neutral_Far:
+                        AttackOrganizer["Neutral"] = true;
+                        AttackOrganizer["Far"] = true;
+                        //Anim.Play(Animations["Neutral_Far"].name);
+                        break;
+                    case CombatEnums.Placement.Ground_Far:
+                        AttackOrganizer["Ground"] = true;
+                        AttackOrganizer["Far"] = true;
+                        //Anim.Play(Animations["Ground_Far"].name);
+                        break;
+                    case CombatEnums.Placement.Aerial_MidRange:
+                        AttackOrganizer["Aerial"] = true;
+                        AttackOrganizer["MidRange"] = true;
+                        //Anim.Play(Animations["Aerial_MidRange"].name);
+                        break;
+                    case CombatEnums.Placement.Neutral_MidRange:
+                        AttackOrganizer["Neutral"] = true;
+                        AttackOrganizer["MidRange"] = true;
+                        //Anim.Play(Animations["Neutral_MidRange"].name);
+                        break;
+                    case CombatEnums.Placement.Ground_MidRange:
+                        AttackOrganizer["Ground"] = true;
+                        AttackOrganizer["MidRange"] = true;
+                        //Anim.Play(Animations["Ground_MidRange"].name);
+                        break;
+                    case CombatEnums.Placement.Aerial_Close:
+                        AttackOrganizer["Aerial"] = true;
+                        AttackOrganizer["Close"] = true;
+                        //Anim.Play(Animations["Aerial_Close"].name);
+                        break;
+                    case CombatEnums.Placement.Neutral_Close:
+                        AttackOrganizer["Neutral"] = true;
+                        AttackOrganizer["Close"] = true;
+                        //Anim.Play(Animations["Neutral_Close"].name);
+                        break;
+                    case CombatEnums.Placement.Ground_Close:
+                        AttackOrganizer["Ground"] = true;
+                        AttackOrganizer["Close"] = true;
+                        //Anim.Play(Animations["Ground_Close"].name);
+                        break;
+                };
+                SetAttackButtonInfo();
+                PlayerAnim.Play(PlayerAttack.AttackAnimation.name, 0, 0.0f);
+                EnemyHP = EnemyHP - PlayerAttack.Damage;
+                OpeningCounter = OpeningCounter - PlayerAttack.Start_Lag;
+                updateTMP();
+                yield return new WaitUntil(() => PlayerAnim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+            }
+            if (EnemyHP <= 0)
+            {
+                InCombo = false;
+                Debug.Log("Fight over killed enemy");
+            }
+            else 
+            {
+                Debug.Log("Combo over");
+                Restart();
+                updateTMP();
+                InCombo = false;
+                AttackComboPressed = false;
+                AttackGrid.GetComponent<CanvasGroup>().interactable = false;
+                Enemy.GetComponent<EnemyAI>().CombatAIReset();
+            }
+        }
+        public void AttackButtonPressedInCombo()
+        {
+            AttackComboPressed = true;
+        }
+        public void Restart()
+        {
+            OpeningCounter = 0;
+            CurrentTurnStep = TurnSteps.MoveStep;
+            MoveGrid.GetComponent<CanvasGroup>().interactable = true;
+            ResetAttackOrganizer();
+            updateTMP();
         }
     }
 }

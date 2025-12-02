@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa662d69c57116b4099b83e14f7a2fde, type: 3}
   m_Name: Playerstats
   m_EditorClassIdentifier: 
+  HP: 84
   AerialAttacks:
+  - {fileID: 11400000, guid: 52204a69d6100ac4ea8d7f67742a6272, type: 2}
   - {fileID: 11400000, guid: 52204a69d6100ac4ea8d7f67742a6272, type: 2}
   NeutralAttacks: []
   GroundAttacks: []

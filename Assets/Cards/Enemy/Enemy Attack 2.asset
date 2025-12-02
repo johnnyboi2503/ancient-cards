@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackName: DownSwipe
   ThisMovePlacement: 0
-  ThisAttackType: 2
-  MoveWeakness: 04000000
+  ThisAttackType: 4
+  MoveWeakness: 02000000
   Start_Lag: 5
   End_Lag: 5
   Damage: 7

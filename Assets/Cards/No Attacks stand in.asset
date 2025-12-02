@@ -15,8 +15,10 @@ MonoBehaviour:
   AttackName: 
   ThisMovePlacement: 0
   ThisAttackType: 0
-  MoveWeakness: 
+  MoveWeakness: 01000000020000000300000004000000
   Start_Lag: 0
   End_Lag: 0
   Damage: 0
   EnemyPlacementAfterHit: 4
+  PlayerPlacementAfterHit: 0
+  AttackAnimation: {fileID: 0}

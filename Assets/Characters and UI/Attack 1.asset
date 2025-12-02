@@ -15,8 +15,10 @@ MonoBehaviour:
   AttackName: test
   ThisMovePlacement: 0
   ThisAttackType: 1
-  MoveWeakness: 020000000300000004000000
-  Start_Lag: 3
+  MoveWeakness: 03000000
+  Start_Lag: 10
   End_Lag: 7
-  Damage: 0
-  Placement: 0
+  Damage: 10
+  EnemyPlacementAfterHit: 0
+  PlayerPlacementAfterHit: 0
+  AttackAnimation: {fileID: 7400000, guid: 4d63755f3a8d7514e8c6afd5dbe3009a, type: 2}

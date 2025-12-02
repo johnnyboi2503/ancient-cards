@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackName: Grapple
   ThisMovePlacement: 1
-  ThisAttackType: 3
-  MoveWeakness: 0200000003000000
+  ThisAttackType: 2
+  MoveWeakness: 03000000
   Start_Lag: 6
   End_Lag: 4
-  Damage: 2
+  Damage: 1
   EnemyPlacementAfterHit: 6
   PlayerPlacementAfterHit: 0
   AttackAnimation: {fileID: 7400000, guid: 4d63755f3a8d7514e8c6afd5dbe3009a, type: 2}

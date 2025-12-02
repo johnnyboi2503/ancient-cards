@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackName: Enemy attack 3
   ThisMovePlacement: 2
-  ThisAttackType: 1
+  ThisAttackType: 3
   MoveWeakness: 04000000
   Start_Lag: 2
   End_Lag: 8
-  Damage: 1
-  EnemyPlacementAfterHit: 4
+  Damage: 3
+  EnemyPlacementAfterHit: 3
   PlayerPlacementAfterHit: 2
   AttackAnimation: {fileID: 7400000, guid: 4d63755f3a8d7514e8c6afd5dbe3009a, type: 2}
