@@ -48,8 +48,14 @@ namespace AYellowpaper.SerializedCollections
         public Attacks EnemyAttack;
         private bool InCombo = false;
         private bool AttackComboPressed = false;
+        public EnemyList EnemyList;
         public void Awake()
         {
+            Vector3 pos = Enemy.transform.position;
+            Quaternion rot = Enemy.transform.rotation;
+            GameObject NewEnemy = Instantiate(EnemyList.EnemyPrefabList[EnemyList.EnemyIndex], pos, rot);
+            Destroy(Enemy);
+            Enemy = NewEnemy;
             CurrentTurnStep = TurnSteps.MoveStep;
             OpeningCounter = 00;
             PlayerHP = CurrentPlayerStats.HP;
@@ -277,26 +283,7 @@ namespace AYellowpaper.SerializedCollections
                     PlayerWeak = true;
                 }
             }
-            if (PlayerWeak && EnemyWeak)
-            {
-                Debug.Log("Enemy and Player weak");
-                if (PlayerAttack.End_Lag < EnemyAttack.End_Lag)
-                {
-                    Debug.Log("Enemy Wiff player can attack");
-                    Restart();
-                } 
-                else if (EnemyAttack.End_Lag < PlayerAttack.End_Lag)
-                {
-                    Debug.Log("Player Wiff Enemy can attack");
-                    Restart();
-                } 
-                else
-                {
-                    Debug.Log("both Wiff reset combat");
-                    Restart();
-                }
-            } 
-            else if (PlayerWeak)
+            if (PlayerWeak)
             {
                 Debug.Log("Player weak To " + EnemyAttack);
                 Enemy.GetComponent<EnemyAI>().EnemyMovePositionCalc(CombatEnums.EnemyMovePositionCalcType.Combo);
@@ -396,6 +383,7 @@ namespace AYellowpaper.SerializedCollections
             {
                 InCombo = false;
                 Debug.Log("Fight over killed enemy");
+
             }
             else 
             {
