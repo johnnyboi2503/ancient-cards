@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: EnemyList
   m_EditorClassIdentifier: 
   EnemyPrefabList:
-  - {fileID: 0}
+  - {fileID: 4754209769099165784, guid: 6d1ffec0a27df284b8a7e9c456b066b3, type: 3}
   EnemyIndex: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackName: test
   ThisMovePlacement: 0
-  ThisAttackType: 1
+  ThisAttackType: 2
   MoveWeakness: 03000000
   Start_Lag: 10
   End_Lag: 7

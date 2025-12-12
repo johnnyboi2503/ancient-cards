@@ -46,9 +46,11 @@ public class EnemyAI : MonoBehaviour
             { "MidRange", false },
             { "Close", false }
         };
-    public void Start()
+    public void Awake()
     {
+        CombatTurnMannager = GameObject.Find("Combat manager");
         Anim = GetComponent<Animator>();
+        EnemyPlacement = CombatEnums.Placement.Neutral_MidRange;
     }
     public void ResetAttackOrganizer()
     {
@@ -62,10 +64,6 @@ public class EnemyAI : MonoBehaviour
     {
         System.Array values = System.Enum.GetValues(typeof(T));//this creates a list of of the enum values
         return (T)values.GetValue(Random.Range(0, values.Length));//this gets it from the Array type list
-    }
-    public void Awake()
-    {
-        EnemyPlacement = CombatEnums.Placement.Neutral_MidRange;
     }
     public void ResetMovePositionOrganizer()
     {

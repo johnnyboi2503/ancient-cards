@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEditor;
 
 namespace AYellowpaper.SerializedCollections
 {
@@ -49,8 +51,10 @@ namespace AYellowpaper.SerializedCollections
         private bool InCombo = false;
         private bool AttackComboPressed = false;
         public EnemyList EnemyList;
+        public bool FightOver = false;
         public void Awake()
         {
+            FightOver = false;
             Vector3 pos = Enemy.transform.position;
             Quaternion rot = Enemy.transform.rotation;
             GameObject NewEnemy = Instantiate(EnemyList.EnemyPrefabList[EnemyList.EnemyIndex], pos, rot);
@@ -383,9 +387,9 @@ namespace AYellowpaper.SerializedCollections
             {
                 InCombo = false;
                 Debug.Log("Fight over killed enemy");
-
+                FightOver = true;
             }
-            else 
+            else if (OpeningCounter <= 0)
             {
                 Debug.Log("Combo over");
                 Restart();
